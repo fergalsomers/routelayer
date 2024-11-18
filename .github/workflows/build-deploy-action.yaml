@@ -35,5 +35,5 @@ jobs:
           repository: github.com/${{ github.repository }}
           skaffold-version: "2.13.2"
 
-      - name: Get Helm releases
-        run: helm list
+      - name: Wait to for controller to come up
+        run: kubectl wait --for='jsonpath={.status.availableReplicas}'=1 deployment.apps/routelayer-controller-manager -n  routelayer-system --timeout="60s"

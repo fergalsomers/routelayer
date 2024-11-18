@@ -1,0 +1,27 @@
+# permissions for end users to edit layers.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    app.kubernetes.io/name: routelayer
+    app.kubernetes.io/managed-by: kustomize
+  name: layer-editor-role
+rules:
+- apiGroups:
+  - routelayer.github.com
+  resources:
+  - layers
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - routelayer.github.com
+  resources:
+  - layers/status
+  verbs:
+  - get

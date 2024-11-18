@@ -16,15 +16,13 @@ kind: Config
 build:
   artifacts:
   - image: routelayer
+    hooks:
+      after:
+      - command: ["sh", "-c", 'IMG="${SKAFFOLD_IMAGE}${SKAFFOLD_IMAGE_TAG}" make build-installer']
+        os: [darwin, linux]  
 deploy:
-  helm:
-    releases:
-    - name: routelayer
-      chartPath: charts
-      setValueTemplates:
-        image.repository: "{{.IMAGE_REPO_routelayer}}"
-        image.tag: "{{.IMAGE_TAG_routelayer}}@{{.IMAGE_DIGEST_routelayer}}"
-      setValues:
-        image.pullPolicy: "IfNotPresent"
-      namespace: routelayer
-      createNamespace: true
+  kubectl:
+manifests:
+  rawYaml:
+  - dist/install.yaml   
+

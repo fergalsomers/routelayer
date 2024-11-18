@@ -1,0 +1,9 @@
+apiVersion: routelayer.github.com/v1
+kind: Layer
+metadata:
+  labels:
+    app.kubernetes.io/name: routelayer
+    app.kubernetes.io/managed-by: kustomize
+  name: layer-sample
+spec:
+  # TODO(user): Add fields here
