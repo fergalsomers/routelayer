@@ -16,6 +16,8 @@ It also has a Skaffold.yaml file for local development.
 - kubectl version v1.11.3+.
 - Access to a Kubernetes v1.11.3+ cluster.
 
+optionally Skaffold for local development
+
 ### To Deploy on the cluster
 **Build and push your image to the location specified by `IMG`:**
 
