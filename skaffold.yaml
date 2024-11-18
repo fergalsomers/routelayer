@@ -26,3 +26,5 @@ deploy:
         image.tag: "{{.IMAGE_TAG_routelayer}}@{{.IMAGE_DIGEST_routelayer}}"
       setValues:
         image.pullPolicy: "IfNotPresent"
+      namespace: routelayer
+      createNamespace: true
