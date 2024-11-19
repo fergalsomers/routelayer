@@ -15,7 +15,7 @@ apiVersion: skaffold/v4beta11
 kind: Config
 build:
   artifacts:
-  - image: docker.io/fergal.somers/routelayer
+  - image: fergal.somers/routelayer
     docker:
       cacheFrom:
       # Local Docker builder replaces cache references to the artifact image with
@@ -32,17 +32,12 @@ manifests:
   - dist/install.yaml   
 
 profiles:
-- name: remote-build
+- name: local-build
   build:
     artifacts:
-    - image: docker.io/fergal.somers/routelayer
-      docker:
-        cacheFrom:
-        # Local Docker builder replaces cache references to the artifact image with
-        # the tagged image reference, useful for caching from the previous build.
-        - docker.io/fergal.somers/routelayer
+    - image: fergal.somers/routelayer
       hooks:
         after:
         - command: ["sh", "-c", 'IMG="${SKAFFOLD_IMAGE}${SKAFFOLD_IMAGE_TAG}" make build-installer']
           os: [darwin, linux]  
-
+    local: {}

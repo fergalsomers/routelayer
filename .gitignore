@@ -25,6 +25,9 @@ nohup.out
 bin/*
 Dockerfile.cross
 
+# Distributions 
+./dist/*
+
 # Test binary, built with `go test -c`
 *.test
 
