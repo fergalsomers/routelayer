@@ -311,9 +311,7 @@ spec:
         - --metrics-bind-address=:8443
         - --leader-elect
         - --health-probe-bind-address=:8081
-        command:
-        - /manager
-        image: routelayer:latest
+        image: rko:75f72cb-dirty75f72cb-dirty
         livenessProbe:
           httpGet:
             path: /healthz

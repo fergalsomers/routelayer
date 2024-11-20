@@ -37,7 +37,7 @@ jobs:
         with:
           command: run
           skaffold-version: "2.13.2"
-          profile: local-build
+          profile: ko-build
 
       - name: Wait to for controller to come up
         run: kubectl wait --for='jsonpath={.status.availableReplicas}'=1 deployment.apps/routelayer-controller-manager -n  routelayer-system --timeout="60s"

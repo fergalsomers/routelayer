@@ -80,6 +80,16 @@ test-e2e: manifests generate fmt vet ## Run the e2e tests. Expected an isolated 
 	}
 	go test ./test/e2e/ -v -ginkgo.v
 
+# Build and Run tests separately to run (useful for E2E Dockerfiles)
+.PHONY: build-tests
+build-tests: manifests generate fmt vet ## Run the e2e tests. Expected an isolated environment using Kind.
+	go test ./test/e2e/ -c -o bin/e2e-tests
+
+
+.PHONY: run-tests
+run-tests: build-tests
+	bin/e2e-tests -ginkgo.v
+
 .PHONY: lint
 lint: golangci-lint ## Run golangci-lint linter
 	$(GOLANGCI_LINT) run
@@ -131,6 +141,12 @@ build-installer: manifests generate kustomize ## Generate a consolidated YAML wi
 	mkdir -p dist
 	cd config/manager && $(KUSTOMIZE) edit set image controller=${IMG}
 	$(KUSTOMIZE) build config/default > dist/install.yaml
+
+
+.PHONY: set-image
+set-image: manifests generate kustomize ## Generate a consolidated YAML with CRDs and deployment.
+	cd config/manager && $(KUSTOMIZE) edit set image controller=${IMG}
+
 
 ##@ Deployment
 

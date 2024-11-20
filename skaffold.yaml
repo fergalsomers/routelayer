@@ -26,10 +26,11 @@ build:
       - command: ["sh", "-c", 'IMG="${SKAFFOLD_IMAGE}${SKAFFOLD_IMAGE_TAG}" make build-installer']
         os: [darwin, linux]  
 deploy:
-  kubectl:
+  kubectl: 
 manifests:
-  rawYaml:
-  - dist/install.yaml   
+  kustomize: 
+    paths:
+    - config/default
 
 profiles:
 - name: local-build
@@ -41,3 +42,23 @@ profiles:
         - command: ["sh", "-c", 'IMG="${SKAFFOLD_IMAGE}${SKAFFOLD_IMAGE_TAG}" make build-installer']
           os: [darwin, linux]  
     local: {}
+
+- name: ko-build
+  build:
+    artifacts:
+    - image: rko
+      hooks:
+        after:
+        - command: ["sh", "-c", 'IMG="${SKAFFOLD_IMAGE}${SKAFFOLD_IMAGE_TAG}" make build-installer']
+          os: [darwin, linux]  
+      ko:
+        dependencies:
+          paths:
+            - api
+            - cmd
+            - internal
+            - hack
+            - go.mod 
+        main: ./cmd
+        flags:
+        - -a
