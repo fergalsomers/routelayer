@@ -14,9 +14,28 @@ It also has a Skaffold.yaml file for local development.
 - go version v1.22.0+
 - docker version 17.03+.
 - kubectl version v1.11.3+.
-- Access to a Kubernetes v1.11.3+ cluster.
+- Access to a Kubernetes v1.11.3+ cluster. (e.g. kind)
 
 optionally Skaffold for local development
+
+### To Create a Kind based cluster
+
+You must have kind installed. 
+
+```sh
+make kind-cluster
+```
+
+This will create a Kind cluster and install Istio into it. 
+
+### To Run Istio Routing tests
+
+This uses Go to compile and run some basic tests of Istio routing using a kustomized test setup. 
+
+```sh
+make routing-tests
+```
+
 
 ### To Deploy on the cluster
 **Build and push your image to the location specified by `IMG`:**

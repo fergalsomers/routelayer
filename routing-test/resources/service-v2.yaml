@@ -1,0 +1,13 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: http-echo-v2
+spec:
+  selector:
+    app: http-echo
+    version: v2     
+  ports:
+    - protocol: TCP
+      targetPort: 8080
+      port: 8080
+  type: LoadBalancer

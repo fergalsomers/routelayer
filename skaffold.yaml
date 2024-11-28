@@ -48,7 +48,9 @@ profiles:
     artifacts:
     - image: rko
       hooks:
-        after:
+        before: # force running the tests
+        - command: ["sh", "-c", 'IMG="${SKAFFOLD_IMAGE}${SKAFFOLD_IMAGE_TAG}" make test']
+        after:  # build the install.yaml
         - command: ["sh", "-c", 'IMG="${SKAFFOLD_IMAGE}${SKAFFOLD_IMAGE_TAG}" make build-installer']
           os: [darwin, linux]  
       ko:
@@ -62,3 +64,5 @@ profiles:
         main: ./cmd
         flags:
         - -a
+
+

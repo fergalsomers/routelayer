@@ -4,20 +4,20 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.16.4
-  name: layers.routelayer.github.com
+  name: layerservices.routelayer.github.com
 spec:
   group: routelayer.github.com
   names:
-    kind: Layer
-    listKind: LayerList
-    plural: layers
-    singular: layer
-  scope: Cluster
+    kind: LayerService
+    listKind: LayerServiceList
+    plural: layerservices
+    singular: layerservice
+  scope: Namespaced
   versions:
   - name: v1
     schema:
       openAPIV3Schema:
-        description: Layer is the Schema for the layers API.
+        description: LayerService is the Schema for the layers API.
         properties:
           apiVersion:
             description: |-

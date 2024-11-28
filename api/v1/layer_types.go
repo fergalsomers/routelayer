@@ -28,18 +28,25 @@ type LayerSpec struct {
 	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
 
-	// Foo is an example field of Layer. Edit layer_types.go to remove/update
-	Foo string `json:"foo,omitempty"`
+	// Layers can be ordered into tree topology
+	// Layers at the same node-level - are alternates
+	// if unspecified, the layer is a child of the root layer
+	Parent string `json:"parent,omitempty"`
 }
+
+// Important: Run "make" to regenerate code after modifying this file
 
 // LayerStatus defines the observed state of Layer.
 type LayerStatus struct {
-	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
-	// Important: Run "make" to regenerate code after modifying this file
+	// Current state of the layer
+	// TODO insert known FSM's,
+	State   string `json:"state,omitempty"`
+	Message string `json:"message,omitempty"`
 }
 
 // +kubebuilder:object:root=true
 // +kubebuilder:subresource:status
+// +kubebuilder:resource:scope=Cluster
 
 // Layer is the Schema for the layers API.
 type Layer struct {
@@ -59,6 +66,55 @@ type LayerList struct {
 	Items           []Layer `json:"items"`
 }
 
+// LayerServiceSpec defines the desired state of Layer.
+type LayerServiceSpec struct {
+	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
+	// Important: Run "make" to regenerate code after modifying this file
+
+	// Reference to the layer must be defined.
+	// +kubebuilder:validation:Required
+	Layer string `json:"layer"`
+	// Host - is the name of the service to route on the basis.
+	// +kubebuilder:validation:Required
+	Host string `json:"host"`
+	// Labels optional labels to defined
+	// When defined they will be used to create an istio DestinationRule with subsets
+	// -- see https://istio.io/latest/docs/reference/config/networking/virtual-service/#Destination
+	Labels map[string]string `json:"labels,omitempty"`
+	// Destination - optional destination (must be different from the host)
+	// Either Destination or Labels must be specified.
+	Destination string `json:"destination,omitempty"`
+}
+
+type LayerServiceStatus struct {
+	// Current state of the layerservice
+	// TODO insert known FSM's,
+	State string `json:"state,omitempty"`
+}
+
+// +kubebuilder:object:root=true
+// +kubebuilder:subresource:status
+// +kubebuilder:resource:scope=Namespaced
+
+// LayerService is the Schema for the layers API.
+type LayerService struct {
+	metav1.TypeMeta   `json:",inline"`
+	metav1.ObjectMeta `json:"metadata,omitempty"`
+
+	Spec   LayerSpec   `json:"spec,omitempty"`
+	Status LayerStatus `json:"status,omitempty"`
+}
+
+// +kubebuilder:object:root=true
+
+// LayerServiceList contains a list of Layer.
+type LayerServiceList struct {
+	metav1.TypeMeta `json:",inline"`
+	metav1.ListMeta `json:"metadata,omitempty"`
+	Items           []Layer `json:"items"`
+}
+
 func init() {
 	SchemeBuilder.Register(&Layer{}, &LayerList{})
+	SchemeBuilder.Register(&LayerService{}, &LayerServiceList{})
 }

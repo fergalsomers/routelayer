@@ -20,7 +20,7 @@ spec:
     listKind: LayerList
     plural: layers
     singular: layer
-  scope: Namespaced
+  scope: Cluster
   versions:
   - name: v1
     schema:
@@ -47,13 +47,21 @@ spec:
           spec:
             description: LayerSpec defines the desired state of Layer.
             properties:
-              foo:
-                description: Foo is an example field of Layer. Edit layer_types.go
-                  to remove/update
+              parent:
+                description: |-
+                  Layers can be ordered into tree topology
+                  Layers at the same node-level - are alternates
+                  if unspecified, the layer is a child of the root layer
                 type: string
             type: object
           status:
             description: LayerStatus defines the observed state of Layer.
+            properties:
+              message:
+                type: string
+              state:
+                description: Current state of the layer
+                type: string
             type: object
         type: object
     served: true
@@ -311,7 +319,7 @@ spec:
         - --metrics-bind-address=:8443
         - --leader-elect
         - --health-probe-bind-address=:8081
-        image: rko:75f72cb-dirty75f72cb-dirty
+        image: fergal.somers/routelayer:222f196-dirty222f196-dirty
         livenessProbe:
           httpGet:
             path: /healthz

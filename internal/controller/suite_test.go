@@ -26,6 +26,8 @@ import (
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/client-go/kubernetes/scheme"
 	"k8s.io/client-go/rest"
 	"sigs.k8s.io/controller-runtime/pkg/client"
@@ -34,6 +36,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 
 	routelayerv1 "github.com/fergalsomers/routelayer/api/v1"
+	ctrl "sigs.k8s.io/controller-runtime"
 	// +kubebuilder:scaffold:imports
 )
 
@@ -93,4 +96,99 @@ var _ = AfterSuite(func() {
 	cancel()
 	err := testEnv.Stop()
 	Expect(err).NotTo(HaveOccurred())
+})
+
+var _ = Describe("Layer Reconciler", func() {
+	Context("When reconciling a Layer", func() {
+		const (
+			resourceName = "test-layer"
+			namespace    = "default"
+		)
+
+		ctx := context.Background()
+
+		namespacedName := types.NamespacedName{
+			Name:      resourceName,
+			Namespace: namespace,
+		}
+
+		log := zap.New()
+
+		var layer *routelayerv1.Layer
+
+		// The test emvironment has a K8s control plane - which respects CREATE/GET/UPDATE/DELETE but we
+		// have not registered a controller directly. This means we need to create a LayerReconciler and call
+		// the reconcile method directly.
+
+		BeforeEach(func() {
+			layer = &routelayerv1.Layer{
+				ObjectMeta: metav1.ObjectMeta{
+					Name:      resourceName,
+					Namespace: namespace,
+				},
+			}
+			err := k8sClient.Create(ctx, layer)
+			Expect(err).NotTo(HaveOccurred())
+			log.Info("layer", "resourceVersion", layer.ObjectMeta.ResourceVersion, "state", layer.Status.State)
+		})
+
+		AfterEach(func() {
+			log.Info("layer", "resourceVersion", layer.ObjectMeta.ResourceVersion, "state", layer.Status.State)
+			err := k8sClient.Delete(ctx, layer)
+			Expect(err).NotTo(HaveOccurred())
+			// force reconcilliation after delete to delete the item.
+			// note this will remove the finalizers (i.e. we implicitly test deletion of finalizers works)
+			req := ctrl.Request{NamespacedName: namespacedName}
+			lc := &LayerReconciler{Client: k8sClient}
+			lc.Reconcile(ctx, req)
+		})
+
+		It("Should set and remove finalizers correctly", func() {
+			// Tests finalizers are set and unset correctly by the code
+			// This ensures the item can be created.
+			req := ctrl.Request{NamespacedName: namespacedName}
+			lc := &LayerReconciler{Client: k8sClient}
+			lc.Reconcile(ctx, req)
+
+			// Finalizer should be set
+			layer = &routelayerv1.Layer{}
+			err := k8sClient.Get(ctx, namespacedName, layer)
+			Expect(err).NotTo(HaveOccurred())
+			Expect(layer.Finalizers).To(ContainElement(RouteLayerFinalizer))
+		})
+
+		It("Layer with no parent should be ready", func() {
+			req := ctrl.Request{NamespacedName: namespacedName}
+			lc := &LayerReconciler{Client: k8sClient}
+			lc.Reconcile(ctx, req)
+
+			l := &routelayerv1.Layer{}
+			err := k8sClient.Get(ctx, namespacedName, l)
+			Expect(err).NotTo(HaveOccurred())
+			Expect(l.Status.State).To(Equal(ReadyState))
+		})
+
+		It("Layer with a parent should be waiting", func() {
+			layer.Spec.Parent = "a-parent"
+			err := k8sClient.Update(ctx, layer)
+			Expect(err).NotTo(HaveOccurred())
+
+			req := ctrl.Request{NamespacedName: namespacedName}
+			lc := &LayerReconciler{Client: k8sClient}
+			lc.Reconcile(ctx, req)
+
+			l := &routelayerv1.Layer{}
+			err = k8sClient.Get(ctx, namespacedName, l)
+			Expect(err).NotTo(HaveOccurred())
+			Expect(l.Status.State).To(Equal(WaitingState))
+		})
+
+		It("should update a Layer", func() {
+			// TODO: implement update logic
+		})
+
+		It("should delete a Layer", func() {
+			// TODO: implement delete logic
+		})
+	})
 })

@@ -90,6 +90,21 @@ build-tests: manifests generate fmt vet ## Run the e2e tests. Expected an isolat
 run-tests: build-tests
 	bin/e2e-tests -ginkgo.v
 
+.PHONY: build-routing-test
+build-routing-test: manifests generate fmt vet ## Run the e2e tests. Expected an isolated environment using Kind.
+	go test ./routing-test/e2e/ -c -o bin/routing-e2e-tests
+
+
+.PHONY: run-routing-test
+run-routing-test: build-routing-test
+	bin/routing-e2e-tests -ginkgo.v
+
+
+.PHONY: kind-cluster
+kind-cluster: 
+	./kind-setup.sh
+
+
 .PHONY: lint
 lint: golangci-lint ## Run golangci-lint linter
 	$(GOLANGCI_LINT) run

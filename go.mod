@@ -11,6 +11,30 @@ require (
 )
 
 require (
+	github.com/aws/aws-sdk-go v1.44.122 // indirect
+	github.com/boombuler/barcode v1.0.1-0.20190219062509-6c824513bacc // indirect
+	github.com/cpuguy83/go-md2man/v2 v2.0.4 // indirect
+	github.com/go-errors/errors v1.0.2-0.20180813162953-d98b870cc4e0 // indirect
+	github.com/go-sql-driver/mysql v1.4.1 // indirect
+	github.com/gorilla/websocket v1.5.0 // indirect
+	github.com/gruntwork-io/go-commons v0.8.0 // indirect
+	github.com/hashicorp/errwrap v1.0.0 // indirect
+	github.com/hashicorp/go-multierror v1.1.0 // indirect
+	github.com/jmespath/go-jmespath v0.4.0 // indirect
+	github.com/mattn/go-zglob v0.0.2-0.20190814121620-e3c945676326 // indirect
+	github.com/mitchellh/go-homedir v1.1.0 // indirect
+	github.com/moby/spdystream v0.4.0 // indirect
+	github.com/mxk/go-flowrate v0.0.0-20140419014527-cca7078d478f // indirect
+	github.com/pmezard/go-difflib v1.0.1-0.20181226105442-5d4384ee4fb2 // indirect
+	github.com/pquerna/otp v1.2.0 // indirect
+	github.com/russross/blackfriday/v2 v2.1.0 // indirect
+	github.com/stretchr/testify v1.9.0 // indirect
+	github.com/urfave/cli v1.22.2 // indirect
+	golang.org/x/crypto v0.24.0 // indirect
+	google.golang.org/appengine v1.6.7 // indirect
+)
+
+require (
 	github.com/antlr4-go/antlr/v4 v4.13.0 // indirect
 	github.com/asaskevich/govalidator v0.0.0-20190424111038-f61b66f89f4a // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
@@ -40,7 +64,8 @@ require (
 	github.com/google/pprof v0.0.0-20240525223248-4bfdf5a9a2af // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.20.0 // indirect
-	github.com/imdario/mergo v0.3.6 // indirect
+	github.com/gruntwork-io/terratest v0.47.2
+	github.com/imdario/mergo v0.3.11 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
